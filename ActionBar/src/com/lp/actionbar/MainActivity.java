@@ -4,15 +4,18 @@ import java.util.ArrayList;
 
 import com.lp.actionbar.adapter.NavDrawerListAdapter;
 import com.lp.actionbar.model.NavDrawerItem;
-
+import com.lp.actionbar.signup.SignUpActivity;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +26,7 @@ import android.widget.ListView;
 public class MainActivity extends ActionBarActivity {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
+	private static final String PREFS_NAME = "LoginPrefs";
 	private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -31,10 +35,12 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<NavDrawerItem> navDrawerItems;
 	private NavDrawerListAdapter adapter;
     private String profile;
-	@Override
+   
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
 		mTitle = mDrawerTitle = getTitle();
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
         navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
@@ -73,6 +79,7 @@ public class MainActivity extends ActionBarActivity {
 		
 			displayView(0);
 		}
+
 	}
 
 	private class SlideMenuClickListener implements ListView.OnItemClickListener {
@@ -100,6 +107,15 @@ public class MainActivity extends ActionBarActivity {
 		switch (item.getItemId()) {
 		case R.id.action_settings:
 			return true;
+		case R.id.logout:
+		    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.remove("logged");
+            editor.commit();
+            Intent start = new Intent(MainActivity.this,SignUpActivity.class);
+            startActivity(start);
+            finish();
+			return true;	
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -174,8 +190,9 @@ public class MainActivity extends ActionBarActivity {
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 	 private String imagepath() {
-	    	Bundle fieldresults = this.getIntent().getExtras();
-		    String path_image = fieldresults.getString("bitmap");
-				return path_image;
+	    	
+		    String root = Environment.getExternalStorageDirectory().toString();
+		    String path =root+"/Image.jpeg";
+		    return path;
 		}
 }

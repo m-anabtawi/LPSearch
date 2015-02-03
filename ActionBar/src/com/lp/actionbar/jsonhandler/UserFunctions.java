@@ -1,8 +1,12 @@
 package com.lp.actionbar.jsonhandler;
 
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,11 +14,13 @@ import org.json.JSONObject;
 
 public class UserFunctions {
 	
+	private String loginURL = "http://10.10.10.52:7777/login";
+	private String registerURL = "http://10.10.10.52:7777/register";
+	private String uploadeURL = "http://10.10.10.52:7777/upload";
+	private MultipartEntity reqEntity;
+	private File file;
+	private FileBody fileBody;
 
-	
-	private static String loginURL = "";
-	private static String registerURL = "http://10.10.10.52:7777/register";
-	
 	
 	private JSONParser jsonParser;
 	
@@ -36,22 +42,30 @@ public class UserFunctions {
 	}
 	
 
-	public JSONObject registerUser(String name, String email,String image) throws JSONException, UnsupportedEncodingException {
+	public JSONObject registerUser(String name, String email,String password,String image) throws JSONException, UnsupportedEncodingException {
 
 		String jsonString = "";
  
         JSONObject jsonObject = new JSONObject();
 		jsonObject.accumulate("name",name );
         jsonObject.accumulate("email", email);
-        jsonObject.accumulate("password", image);
+        jsonObject.accumulate("password", password);
+        jsonObject.accumulate("image", image);
 		jsonString = jsonObject.toString();
-        StringEntity se = new StringEntity(jsonString);
-		JSONObject json = jsonParser.getJSONFromUrl(registerURL, se);
-		
+		StringEntity se = new StringEntity(jsonString);
+	    JSONObject json = jsonParser.getJSONFromUrl(registerURL, se);
 		return json;
 	}
 	
-
+	public JSONObject uploadeImage(String image,String email) throws UnsupportedEncodingException{
+		
+		reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		file = new File(image);
+		fileBody = new FileBody(file, "images/jpeg");
+		reqEntity.addPart("fileupload", fileBody);
+	    JSONObject json = jsonParser.getJSONFromUrl2(uploadeURL, reqEntity,email);
+		return json;
+	}
 
 	
 }

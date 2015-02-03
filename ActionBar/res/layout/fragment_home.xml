@@ -10,8 +10,7 @@
         android:layout_centerInParent="true"
         android:textSize="16dp"
         android:text="Home"/>
-    
+
   
-    
 
 </RelativeLayout>
