@@ -14,9 +14,10 @@ import org.json.JSONObject;
 
 public class UserFunctions {
 	
-	private String loginURL = "http://10.10.10.52:7777/login";
-	private String registerURL = "http://10.10.10.52:7777/register";
-	private String uploadeURL = "http://10.10.10.52:7777/upload";
+	private String loginURL = "http://192.168.1.102:7777/login";
+	private String registerURL = "http://192.168.1.102:7777/register";
+	private String uploadeURL = "http://192.168.1.102:7777/upload";
+	private String getImageURL = "http://192.168.1.102:7777/getImage";
 	private MultipartEntity reqEntity;
 	private File file;
 	private FileBody fileBody;
@@ -57,15 +58,20 @@ public class UserFunctions {
 		return json;
 	}
 	
-	public JSONObject uploadeImage(String image,String email) throws UnsupportedEncodingException{
+	public JSONObject uploadeImage(String image,String id) throws UnsupportedEncodingException{
 		
 		reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		file = new File(image);
 		fileBody = new FileBody(file, "images/jpeg");
 		reqEntity.addPart("fileupload", fileBody);
-	    JSONObject json = jsonParser.getJSONFromUrl2(uploadeURL, reqEntity,email);
+	    JSONObject json = jsonParser.getJSONFromUrl2(uploadeURL, reqEntity,id);
 		return json;
 	}
-
+	public JSONObject getImage() throws UnsupportedEncodingException{
+		StringEntity se=null ;
+		JSONObject json = jsonParser.getJSONFromUrl(getImageURL,se);
+		return json;
+	}
+	
 	
 }

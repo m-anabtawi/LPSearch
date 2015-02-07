@@ -80,13 +80,13 @@ public class JSONParser {
 		return jObj;
 
 	}
-	public JSONObject getJSONFromUrl2(String url,MultipartEntity params,String email) {
+	public JSONObject getJSONFromUrl2(String url,MultipartEntity params,String id) {
 
 		try {
 			
 			httpClient = new DefaultHttpClient();
 			httpPost = new HttpPost(url);
-			httpPost.setHeader("email",email);
+			httpPost.setHeader("id",id);
 			httpPost.setEntity(params);
 
 			HttpResponse httpResponse = httpClient.execute(httpPost);

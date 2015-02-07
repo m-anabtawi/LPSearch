@@ -43,8 +43,9 @@ public class RegistrationActivity extends Activity{
 	private EditText password;
 	private TextView checkError;
 	private ImageView image;
-	private static String KEY_SUCCESS = "success";
-	private static String KEY_ERROR = "error";
+	private String KEY_SUCCESS = "success";
+	private String KEY_ERROR = "error";
+	private String KEY_ID="id";
 	private int REQUEST_CAMERA = 100;
 	private int SELECT_FILE = 1;
 	private String[] items = {"Take photo","Choose from library","Cancel"};
@@ -99,7 +100,7 @@ public class RegistrationActivity extends Activity{
             try {
             	json = userFunction.registerUser(params[0], params[1],params[2],params[3]);
                 if (Integer.parseInt(json.getString(KEY_SUCCESS))==1){
-                	new uploadAsyncTask().execute(params[3],params[1]);
+                	new uploadAsyncTask().execute(params[3],json.getString(KEY_ID));
                 }
             }
             catch (JSONException e){

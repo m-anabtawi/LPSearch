@@ -1,206 +1,145 @@
 package com.lp.actionbar;
 
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import com.lp.actionbar.R;
 import com.lp.actionbar.jsonhandler.UserFunctions;
-import com.lp.actionbar.signup.RegistrationActivity;
-
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.ListView;
+
+
 
 public class ExploreFragment extends Fragment {
-	private LinearLayout imageLayout;
-	private ImageView[] img_items;
-	private Button [] button_items;
-	private int length=0;
 	public ExploreFragment(){}
-	private Context cont;
-	@Override
+	ListView listView;
+	DisplayImageOptions options;
+	ImageLoader imageLoader;
+	String [] imageUrls;
+	
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		options = new DisplayImageOptions.Builder()
+		.showImageOnLoading(R.drawable.ic_launcher)
+		.showImageForEmptyUri(R.drawable.ic_launcher)
+		.showImageOnFail(R.drawable.ic_launcher)
+		.cacheInMemory(true)
+		.cacheOnDisk(true)
+		.considerExifParams(true)
+		.build();
+	}
+
+	
     public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
- 
-        View rootView = inflater.inflate(R.layout.fragment_explore, container, false);
-        imageLayout = (LinearLayout)rootView.findViewById(R.id.lay);
-        cont=  getActivity();
+        View rootView = inflater.inflate(R.layout.fragment_image_list, container, false);
+        listView = (ListView) rootView.findViewById(android.R.id.list);
         new GetImageAsyncTask().execute("");
         return rootView;
     }
 	
-	private class GetImageAsyncTask extends AsyncTask<String, Void,Bitmap []> {
-        protected Bitmap[] doInBackground(String... params) {
+   class ImageAdapter extends BaseAdapter {
+	    private LayoutInflater inflater;
+		private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+	    ImageAdapter() {
+		inflater = LayoutInflater.from(getActivity());
+		}
+		
+		public int getCount() {
+		
+		return imageUrls.length;
+		}
+		@Override
+		public Object getItem(int position) {
+		return position;
+		}
+		
+		public long getItemId(int position) {
+		return position;
+		}
+        public View getView(final int position, View convertView, ViewGroup parent) {
+        	View view = convertView;
+        	final ViewHolder holder;
+        	ImageLoader imageLoader;
+        	imageLoader = ImageLoader.getInstance();
+        	imageLoader.init(ImageLoaderConfiguration.createDefault((Context)getActivity()));
+        	if (convertView == null) {
+        	view = inflater.inflate(R.layout.item_list_view, parent, false);
+        	holder = new ViewHolder();
+        	holder.button = (Button) view.findViewById(R.id.button);
+        	holder.image = (ImageView) view.findViewById(R.id.image);
+        	view.setTag(holder);
+        	} else {
+        	holder = (ViewHolder) view.getTag();
+        	} 
+			ImageLoader.getInstance().displayImage(imageUrls[position], holder.image, options, animateFirstListener);
+			return view;
+	   }
+    }
+	private static class ViewHolder {
+		Button button;
+		ImageView image;
+	}
+	private class GetImageAsyncTask extends AsyncTask<String, Void,String [] > {
+        protected String [] doInBackground(String... params) {
         	UserFunctions userFunction = new UserFunctions();
             JSONObject json=null;
             try {
-            	json = userFunction.getImage();  
+            	json = userFunction.getImage();             	
+            	String res = json.getString("url");
+         		String delims = ",";
+         		imageUrls= res.split(delims);
             }
             catch (UnsupportedEncodingException e){
                 e.printStackTrace();
             }
-            Bitmap [] bitmap=null;
-            try {
-            	String res = json.getString("url");
-         		String delims = ",";
-     	        String[] tokens = res.split(delims);
-     	        length=tokens.length;
-                bitmap=new Bitmap[length];
-        		for(int i=0;i<length;i++){
-    	        	URL url = new URL(tokens[i]);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setDoInput(true);
-                    connection.connect();
-                    InputStream input = connection.getInputStream();
-    				bitmap[i] = BitmapFactory.decodeStream(input);
-    	        }
-            	
-				
-				
-			}
-        	catch(IOException e){
-        		e.printStackTrace();
-        	}
-        	catch (JSONException e) {
+            catch (JSONException e) {
 				e.printStackTrace();
 			}
-        return bitmap;
-        	
+          return imageUrls;
         }
-        protected void onPostExecute(Bitmap [] bitmap) {
-        	//Toast.makeText(cont.getApplicationContext(), "length="+length, Toast.LENGTH_LONG).show();
-        	img_items = new ImageView[length];
- 		    button_items=new Button[length];
-        	for(int i=0;i<length;i++){
-        		img_items[i] = new ImageView(cont);
-				button_items[i]=new Button(cont);
-				button_items[i].setText("image");
-		    	img_items[i].setImageBitmap(bitmap[i]);
-	    	    imageLayout.addView(img_items[i]);
-				imageLayout.addView(button_items[i]);
-        		
-        	}
-        	
+   
+        protected void onPostExecute(String []image) {
+        	((ListView) listView).setAdapter(new ImageAdapter());
         }
-
-        	
-	}
-}
-package com.lp.actionbar;
-
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import org.json.JSONException;
-import org.json.JSONObject;
-import android.app.Fragment;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import com.lp.actionbar.R;
-import com.lp.actionbar.jsonhandler.UserFunctions;
-import com.lp.actionbar.signup.RegistrationActivity;
-
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-
-public class ExploreFragment extends Fragment {
-	private LinearLayout imageLayout;
-	private ImageView[] img_items;
-	private Button [] button_items;
-	private int length=0;
-	public ExploreFragment(){}
-	private Context cont;
-	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
- 
-        View rootView = inflater.inflate(R.layout.fragment_explore, container, false);
-        imageLayout = (LinearLayout)rootView.findViewById(R.id.lay);
-        cont=  getActivity();
-        new GetImageAsyncTask().execute("");
-        return rootView;
+        
     }
 	
-	private class GetImageAsyncTask extends AsyncTask<String, Void,Bitmap []> {
-        protected Bitmap[] doInBackground(String... params) {
-        	UserFunctions userFunction = new UserFunctions();
-            JSONObject json=null;
-            try {
-            	json = userFunction.getImage();  
-            }
-            catch (UnsupportedEncodingException e){
-                e.printStackTrace();
-            }
-            Bitmap [] bitmap=null;
-            try {
-            	String res = json.getString("url");
-         		String delims = ",";
-     	        String[] tokens = res.split(delims);
-     	        length=tokens.length;
-                bitmap=new Bitmap[length];
-        		for(int i=0;i<length;i++){
-    	        	URL url = new URL(tokens[i]);
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setDoInput(true);
-                    connection.connect();
-                    InputStream input = connection.getInputStream();
-    				bitmap[i] = BitmapFactory.decodeStream(input);
-    	        }
-            	
-				
-				
-			}
-        	catch(IOException e){
-        		e.printStackTrace();
-        	}
-        	catch (JSONException e) {
-				e.printStackTrace();
-			}
-        return bitmap;
-        	
-        }
-        protected void onPostExecute(Bitmap [] bitmap) {
-        	//Toast.makeText(cont.getApplicationContext(), "length="+length, Toast.LENGTH_LONG).show();
-        	img_items = new ImageView[length];
- 		    button_items=new Button[length];
-        	for(int i=0;i<length;i++){
-        		img_items[i] = new ImageView(cont);
-				button_items[i]=new Button(cont);
-				button_items[i].setText("image");
-		    	img_items[i].setImageBitmap(bitmap[i]);
-	    	    imageLayout.addView(img_items[i]);
-				imageLayout.addView(button_items[i]);
-        		
-        	}
-        	
-        }
-
-        	
-	}
+	private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+	static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
+	
+		public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+			 if (loadedImage != null) {
+				ImageView imageView = (ImageView) view;
+				boolean firstDisplay = !displayedImages.contains(imageUri);
+				if (firstDisplay) {
+					FadeInBitmapDisplayer.animate(imageView, 500);
+					displayedImages.add(imageUri);
+				}
+			 }
+		}
+    }
 }

@@ -1104,11 +1104,14 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f090002;
         public static final int action_menu_presenter=0x7f090003;
         public static final int action_mode_close_button=0x7f090024;
-        public static final int action_settings=0x7f09004d;
+        public static final int action_settings=0x7f090051;
         public static final int activity_chooser_view_content=0x7f090025;
         public static final int always=0x7f09000f;
         public static final int beginning=0x7f090016;
+        public static final int button=0x7f09004e;
         public static final int checkbox=0x7f09002d;
+        public static final int clearDiskCache=0x7f090050;
+        public static final int clearMemoryCache=0x7f09004f;
         public static final int collapseActionView=0x7f090010;
         public static final int default_activity_button=0x7f090028;
         public static final int dialog=0x7f090014;
@@ -1128,12 +1131,13 @@ containing a value of this type.
         public static final int icon=0x7f09002a;
         public static final int ifRoom=0x7f090011;
         public static final int image=0x7f090027;
+        public static final int lay=0x7f09004d;
         public static final int listMode=0x7f090006;
         public static final int list_item=0x7f090029;
         public static final int list_slidermenu=0x7f09003e;
         public static final int loginBtn=0x7f090049;
         public static final int login_btn=0x7f09004a;
-        public static final int logout=0x7f09004e;
+        public static final int logout=0x7f090052;
         public static final int middle=0x7f090018;
         public static final int name=0x7f090042;
         public static final int nameText=0x7f090041;
@@ -1231,12 +1235,15 @@ containing a value of this type.
         public static final int fragment_brand=0x7f03001d;
         public static final int fragment_explore=0x7f03001e;
         public static final int fragment_home=0x7f03001f;
-        public static final int fragment_setting=0x7f030020;
-        public static final int home_item=0x7f030021;
-        public static final int support_simple_spinner_dropdown_item=0x7f030022;
+        public static final int fragment_image_list=0x7f030020;
+        public static final int fragment_setting=0x7f030021;
+        public static final int home_item=0x7f030022;
+        public static final int item_list_view=0x7f030023;
+        public static final int support_simple_spinner_dropdown_item=0x7f030024;
     }
     public static final class menu {
-        public static final int main=0x7f0d0000;
+        public static final int explor_menu=0x7f0d0000;
+        public static final int main=0x7f0d0001;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -1282,10 +1289,13 @@ containing a value of this type.
         public static final int action_logout=0x7f0a0010;
         public static final int action_settings=0x7f0a000f;
         public static final int app_name=0x7f0a000d;
+        public static final int button_text=0x7f0a0015;
+        public static final int descr_image=0x7f0a0013;
         public static final int drawer_close=0x7f0a0012;
         public static final int drawer_open=0x7f0a0011;
         public static final int hello_world=0x7f0a000e;
-        public static final int title_activity_sign_up=0x7f0a0013;
+        public static final int place_holder=0x7f0a0014;
+        public static final int title_activity_sign_up=0x7f0a0016;
     }
     public static final class style {
         /** 

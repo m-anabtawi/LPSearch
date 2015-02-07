@@ -1,7 +1,6 @@
 package com.lp.actionbar;
 
 import java.util.ArrayList;
-
 import com.lp.actionbar.adapter.NavDrawerListAdapter;
 import com.lp.actionbar.model.NavDrawerItem;
 import com.lp.actionbar.signup.SignUpActivity;
@@ -35,12 +34,10 @@ public class MainActivity extends ActionBarActivity {
     private ArrayList<NavDrawerItem> navDrawerItems;
 	private NavDrawerListAdapter adapter;
     private String profile;
-   
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
 		mTitle = mDrawerTitle = getTitle();
         navMenuTitles = getResources().getStringArray(R.array.nav_drawer_items);
         navMenuIcons = getResources().obtainTypedArray(R.array.nav_drawer_icons);
@@ -84,8 +81,7 @@ public class MainActivity extends ActionBarActivity {
 
 	private class SlideMenuClickListener implements ListView.OnItemClickListener {
 		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
+		public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
 			
 			displayView(position);
 		}
@@ -106,6 +102,7 @@ public class MainActivity extends ActionBarActivity {
 	
 		switch (item.getItemId()) {
 		case R.id.action_settings:
+			
 			return true;
 		case R.id.logout:
 		    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -132,7 +129,6 @@ public class MainActivity extends ActionBarActivity {
 
 
 	private void displayView(int position) {
-		
 		Fragment fragment = null;
 		switch (position) {
 		case 0:
@@ -154,11 +150,9 @@ public class MainActivity extends ActionBarActivity {
 
 		if (fragment != null) {
 			FragmentManager fragmentManager = getFragmentManager();
-			fragmentManager.beginTransaction()
-					.replace(R.id.frame_container, fragment).commit();
-
-		
-			mDrawerList.setItemChecked(position, true);
+			
+			fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+            mDrawerList.setItemChecked(position, true);
 			mDrawerList.setSelection(position);
 			setTitle(navMenuTitles[position]);
 			mDrawerLayout.closeDrawer(mDrawerList);
@@ -168,7 +162,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
-	@Override
+
 	public void setTitle(CharSequence title) {
 		mTitle = title;
 		getActionBar().setTitle(mTitle);

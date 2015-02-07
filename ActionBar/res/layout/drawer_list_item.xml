@@ -10,15 +10,16 @@
         android:id="@+id/icon"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:src="@drawable/ic_launcher" />
-
+        android:src="@drawable/ic_launcher"
+        android:contentDescription="@string/descr_image" />
+    
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center_vertical"
-        android:paddingLeft="5dp"
-        android:text="Placeholder Text"
+        android:padding="5dp"
+        android:contentDescription="@string/place_holder"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>
