@@ -7,16 +7,44 @@
     <uses-sdk
         android:minSdkVersion="15"
         android:targetSdkVersion="20" />
+    <!--permission so the Android application can send the registration ID to the 3rd party server.  -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <application
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- permission so the application can keep the processor from sleeping when a message is received -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- permission so the Android application can register and receive messages  -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <!-- permission to prevent other Android applications from registering and receiving the Android application's messages. The permission name must exactly match this pattern—otherwise the Android application will not receive the messages. -->
+    <permission
+        android:name="com.lp.actionbar.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.lp.actionbar.permission.C2D_MESSAGE" />
+    
+    
+   <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-       <activity
+       <receiver
+            android:name="com.lp.actionbar.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+
+                <!-- Receives the actual messages. -->
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <category android:name="com.lp.actionbar" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.lp.actionbar.GcmIntentService" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <activity
             android:name="com.lp.actionbar.signup.SignUpActivity"
             android:label="@string/app_name" >
             <intent-filter>
@@ -33,6 +61,7 @@
         <activity 
             android:name="com.lp.actionbar.signup.SignInActivity">
         </activity>
+       
     </application>
 
 </manifest>

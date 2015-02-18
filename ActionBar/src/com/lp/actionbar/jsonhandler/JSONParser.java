@@ -15,6 +15,8 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.apache.http.client.methods.HttpGet;
+
 
 
 
@@ -25,20 +27,13 @@ public class JSONParser {
 	 private String json = "";
 	 private HttpClient httpClient;
 	 private HttpPost httpPost;
+	 private HttpGet httpGet;
 	
-	
-
-
-	public JSONParser() {
-
-	}
+	public JSONParser() {}
 
 	public JSONObject getJSONFromUrl(String url, StringEntity params) {
-
-	
-		try {
-		
-			httpClient = new DefaultHttpClient();
+        try {
+		    httpClient = new DefaultHttpClient();
 			httpPost = new HttpPost(url);
 			httpPost.setEntity(params);
 
@@ -55,8 +50,7 @@ public class JSONParser {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					is, "iso-8859-1"), 8);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -64,21 +58,16 @@ public class JSONParser {
 			}
 			is.close();
 			json = sb.toString();
-
-		} catch (Exception e) {
-
-		}
-
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
 		
-		try {
+        try {
 			jObj = new JSONObject(json);			
-		} catch (JSONException e) {
-
-		}
-
-	
-		return jObj;
-
+		}catch (JSONException e) {
+			e.printStackTrace();
+        }
+        return jObj;
 	}
 	public JSONObject getJSONFromUrl2(String url,MultipartEntity params,String id) {
 
@@ -102,8 +91,7 @@ public class JSONParser {
 		}
 
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					is, "iso-8859-1"), 8);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
 			StringBuilder sb = new StringBuilder();
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -112,20 +100,29 @@ public class JSONParser {
 			is.close();
 			json = sb.toString();
 
-		} catch (Exception e) {
-
-		}
-
-		
-		try {
+		} 
+		catch (Exception e) {
+        }
+        try {
 			jObj = new JSONObject(json);			
-		} catch (JSONException e) {
-
+		} 
+        catch (JSONException e) {
+        }
+        return jObj;
 		}
-
 	
-		return jObj;
+	public JSONObject HttpGet(String url){
+		httpClient = new DefaultHttpClient();
+		httpGet = new HttpGet(url);
+		try {
+		 httpClient.execute(httpGet);
+			
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		return null;
+	}
 	
 }
 
